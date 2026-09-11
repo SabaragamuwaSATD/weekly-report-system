@@ -1,10 +1,11 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import type { Request } from 'express';
+import type { Role } from '../../common/enums/role.enum';
 
 export interface CurrentUserPayload {
   userId: string;
   email: string;
-  role: string;
+  role: Role;
 }
 
 interface RequestWithUser extends Request {

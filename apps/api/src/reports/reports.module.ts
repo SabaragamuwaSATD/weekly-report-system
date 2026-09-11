@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Report, ReportSchema } from './schemas/report.schema';
+import { ReportsService } from './reports.service';
+import { ReportsController } from './reports.controller';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Report.name, schema: ReportSchema }]),
   ],
-  exports: [MongooseModule],
+  controllers: [ReportsController],
+  providers: [ReportsService],
+  exports: [ReportsService], // Step 8's review workflow will need this
 })
 export class ReportsModule {}

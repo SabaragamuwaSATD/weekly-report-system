@@ -1,0 +1,7 @@
+cred: manager@company.com
+pw: manager123
+
+
+
+cred: Sabare@test.com
+pw: password123
