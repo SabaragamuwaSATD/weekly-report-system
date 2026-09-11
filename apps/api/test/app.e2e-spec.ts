@@ -20,7 +20,7 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect({ name: 'Weekly Report Generator API', version: '0.1.0' });
   });
 
   afterEach(async () => {
