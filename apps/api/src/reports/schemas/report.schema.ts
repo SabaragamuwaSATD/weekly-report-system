@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { ReportStatus } from '../../common/enums/report-status.enum';
+import { ReportContent, ReportContentSchema } from './report-content.schema';
 import { ReportVersion, ReportVersionSchema } from './report-version.schema';
 import { ReviewEntry, ReviewEntrySchema } from './review-entry.schema';
 
@@ -30,11 +31,15 @@ export class Report {
   })
   status: ReportStatus;
 
-  // Points at the highest versionNumber inside `versions` —
-  // this is what the UI reads/edits when the report is a Draft or Needs Correction
+  // Points at the versionNumber this draft WILL become once submitted
   @Prop({ required: true, default: 1 })
   currentVersion: number;
 
+  // The live, editable draft — this is what create/update endpoints touch
+  @Prop({ type: ReportContentSchema, default: () => ({}) })
+  content: ReportContent;
+
+  // Frozen snapshots, one per submit/resubmit cycle
   @Prop({ type: [ReportVersionSchema], default: [] })
   versions: ReportVersion[];
 
