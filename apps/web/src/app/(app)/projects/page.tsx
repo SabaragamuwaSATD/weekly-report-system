@@ -43,8 +43,24 @@ export default function ProjectsPage() {
   }
 
   useEffect(() => {
-    loadProjects();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let cancelled = false;
+    fetchProjects(showInactive)
+      .then((data) => {
+        if (cancelled) return;
+        setProjects(data);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(
+          err instanceof ApiError ? err.message : "Failed to load projects",
+        );
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [showInactive]);
 
   async function handleCreate(e: React.FormEvent) {

@@ -21,7 +21,10 @@ export class UsersService {
 
   // withPassword=true is only ever used by login — passwordHash is
   // excluded by default because of `select: false` on the schema
-  async findByEmail(email: string, withPassword = false) {
+  async findByEmail(
+    email: string,
+    withPassword = false,
+  ): Promise<UserDocument | null> {
     const query = this.userModel.findOne({ email: email.toLowerCase() });
     return withPassword ? query.select('+passwordHash') : query;
   }

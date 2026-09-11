@@ -44,11 +44,12 @@ export class ReportsService {
     this.assertAtMostOneKeyFlag(content.achievements ?? [], 'achievement');
   }
 
-  async create(ownerId: string, dto: CreateReportDto) {
+  async create(ownerId: string, dto: CreateReportDto): Promise<ReportDocument> {
     const weekStart = new Date(dto.weekStart);
+    const owner = new Types.ObjectId(ownerId);
 
     const existing = await this.reportModel.findOne({
-      owner: ownerId,
+      owner,
       weekStart,
     });
     if (existing) {
@@ -58,8 +59,8 @@ export class ReportsService {
     }
 
     return this.reportModel.create({
-      owner: ownerId,
-      project: dto.project,
+      owner,
+      project: new Types.ObjectId(dto.project),
       weekStart,
       weekEnd: new Date(dto.weekEnd),
       status: ReportStatus.DRAFT,
@@ -80,7 +81,8 @@ export class ReportsService {
     const report = await this.reportModel
       .findById(id)
       .populate('project', 'name')
-      .populate('owner', 'name email');
+      .populate('owner', 'name email')
+      .populate('reviews.reviewedBy', 'name email');
 
     if (!report) {
       throw new NotFoundException('Report not found');
@@ -223,12 +225,12 @@ export class ReportsService {
     // of what `owner` they pass in the query string — this is enforced here,
     // not left to trust on the client.
     if (user.role !== Role.MANAGER) {
-      filter.owner = user.userId;
+      filter.owner = new Types.ObjectId(user.userId);
     } else if (query.owner) {
-      filter.owner = query.owner;
+      filter.owner = new Types.ObjectId(query.owner);
     }
 
-    if (query.project) filter.project = query.project;
+    if (query.project) filter.project = new Types.ObjectId(query.project);
     if (query.status) filter.status = query.status;
 
     if (query.weekStart || query.weekEnd) {
