@@ -1,0 +1,6 @@
+export enum ReportStatus {
+  DRAFT = 'DRAFT',
+  SUBMITTED = 'SUBMITTED',
+  NEEDS_CORRECTION = 'NEEDS_CORRECTION',
+  APPROVED = 'APPROVED',
+}

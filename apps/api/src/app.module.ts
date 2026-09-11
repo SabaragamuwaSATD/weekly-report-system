@@ -2,21 +2,24 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
+import { UsersModule } from './users/users.module';
+import { ProjectsModule } from './projects/projects.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
-    // Loads .env and makes ConfigService available everywhere
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
 
-    // Connects to MongoDB. forRootAsync waits for ConfigModule to load first.
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: config.getOrThrow<string>('MONGODB_URI'),
       }),
     }),
+
+    UsersModule,
+    ProjectsModule,
+    ReportsModule,
   ],
   controllers: [AppController],
 })

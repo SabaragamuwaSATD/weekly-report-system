@@ -1,0 +1,4 @@
+export enum ReviewAction {
+  APPROVED = 'APPROVED',
+  CHANGES_REQUESTED = 'CHANGES_REQUESTED',
+}
